@@ -1,0 +1,152 @@
+/* Menu de consola.
+
+   Movil primero: tira horizontal deslizable.
+   Escritorio (>=768px): columna vertical fija a la izquierda.
+
+   El boton .menu__item es el elemento focusable, asi que NO lleva clip-path
+   (recortaria el anillo de foco) ni transform animado. La geometria vive en
+   .menu__shape y el movimiento en .menu__body. */
+
+.menu {
+  position: relative;
+  z-index: var(--z-rail);
+  display: flex;
+  flex-direction: row;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  background: var(--void);
+  border-bottom: 2px solid var(--iron);
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.menu::-webkit-scrollbar {
+  display: none;
+}
+
+.menu__item {
+  position: relative;
+  flex: 0 0 auto;
+  padding: var(--sp-3) var(--sp-4);
+  scroll-snap-align: center;
+}
+
+.menu__shape {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  clip-path: var(--clip-notch-br);
+  transform: skewX(var(--skew));
+  transition: background var(--dur-fast) linear;
+}
+
+.menu__item:hover .menu__shape {
+  background: var(--iron);
+}
+
+.menu__item[aria-selected='true'] .menu__shape {
+  background: var(--blood);
+  /* Tic en reposo. El keyframe repite el skew para no perderlo. */
+  animation: slab-wobble 2.6s ease-in-out infinite;
+}
+
+.menu__body {
+  position: relative;
+  display: flex;
+  gap: var(--sp-3);
+  align-items: baseline;
+  color: var(--ash);
+  transition:
+    color var(--dur-fast) linear,
+    transform var(--dur-mid) var(--ease-out-hard);
+  transform: skewY(0deg) translate3d(0, 0, 0);
+}
+
+.menu__item:hover .menu__body {
+  color: var(--bone);
+}
+
+.menu__item[aria-selected='true'] .menu__body {
+  color: var(--void);
+}
+
+.menu__index {
+  font-family: var(--ff-body);
+  font-size: var(--fs-meta);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  opacity: 0.75;
+}
+
+.menu__label {
+  font-family: var(--ff-display);
+  font-size: clamp(1rem, 4.2vw, 1.35rem);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Cursor: solo en escritorio, donde la lista es vertical. */
+.menu__cursor {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .menu {
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-8) 0 var(--sp-8) var(--sp-4);
+    overflow-x: visible;
+    overflow-y: auto;
+    border-right: 2px solid var(--iron);
+    border-bottom: none;
+  }
+
+  .menu__item {
+    width: 100%;
+    padding: var(--sp-3) var(--sp-5);
+    text-align: left;
+  }
+
+  .menu__body {
+    justify-content: flex-start;
+    /* Los inactivos quedan inclinados y apagados. */
+    transform: skewY(var(--skew-soft)) translate3d(0, 0, 0);
+  }
+
+  /* El activo se endereza y se desplaza a la derecha. */
+  .menu__item[aria-selected='true'] .menu__body {
+    transform: skewY(0deg) translate3d(var(--sp-4), 0, 0);
+  }
+
+  .menu__label {
+    font-size: clamp(1.1rem, 1.9vw, 1.5rem);
+  }
+
+  .menu__cursor {
+    display: block;
+    margin-left: auto;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity var(--dur-fast) linear;
+  }
+
+  .menu__item[aria-selected='true'] .menu__cursor {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .app__body {
+    grid-template-columns: var(--rail-w) 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .app__body {
+    grid-template-rows: auto 1fr;
+  }
+}

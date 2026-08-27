@@ -1,0 +1,219 @@
+/* Armazon de la pagina: rieles, rejilla principal, fondo y barrido. */
+
+.app {
+  position: relative;
+  z-index: var(--z-stage);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100svh;
+}
+
+.app__body {
+  display: grid;
+  min-height: 0;
+}
+
+/* --- Rieles superior e inferior --- */
+
+.rail {
+  position: relative;
+  z-index: var(--z-rail);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  align-items: center;
+  justify-content: space-between;
+  /* min-width:0 evita que un hijo con nowrap estire el documento entero:
+     sin esto los tres items del riel sumaban 498px en una pantalla de 360. */
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--void);
+  border-block: 2px solid var(--iron);
+}
+
+.rail__brand {
+  font-family: var(--ff-display);
+  font-size: clamp(0.9rem, 2.4vw, 1.15rem);
+  letter-spacing: 0.06em;
+  color: var(--bone);
+  white-space: nowrap;
+}
+
+.rail__brand em {
+  font-style: normal;
+  color: var(--blood);
+}
+
+.rail__meta {
+  min-width: 0;
+  color: var(--ash);
+}
+
+/* En movil el riel superior solo lleva marca y sonido: el subtitulo repite
+   lo que ya dice el hero y era lo que provocaba el desbordamiento. */
+@media (max-width: 767px) {
+  .rail--top .rail__meta {
+    display: none;
+  }
+
+  .rail--bottom .rail__meta {
+    font-size: 0.6rem;
+  }
+}
+
+/* Las pistas de teclado no aportan nada en tactil y ocupan espacio. */
+.rail__hints {
+  display: none;
+  gap: var(--sp-5);
+  color: var(--ash);
+}
+
+.rail__hint b {
+  margin-right: var(--sp-2);
+  font-weight: 800;
+  color: var(--bone);
+}
+
+.rail__sound {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--ash);
+  white-space: nowrap;
+  border: 2px solid var(--iron);
+}
+
+.rail__sound:hover {
+  color: var(--bone);
+  border-color: var(--blood);
+}
+
+.rail__sound[aria-pressed='true'] {
+  color: var(--void);
+  background: var(--blood);
+  border-color: var(--blood);
+}
+
+@media (min-width: 768px) {
+  .rail {
+    padding-inline: var(--sp-6);
+  }
+
+  .rail__hints {
+    display: flex;
+  }
+}
+
+/* --- Escenario: los cinco paneles apilados en una rejilla 1x1 --- */
+
+.stage {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel {
+  grid-area: 1 / 1;
+  min-width: 0;
+  padding: var(--sp-6) var(--sp-5) var(--sp-10);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (min-width: 768px) {
+  .panel {
+    padding: var(--sp-10) var(--sp-10) var(--sp-16);
+  }
+}
+
+/* --- Fondo --- */
+
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-bg);
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--void);
+}
+
+.bg__shape {
+  position: absolute;
+  color: var(--blood);
+}
+
+.bg__shape--a {
+  inset: -30% 45% 30% -20%;
+  background: var(--blood);
+  clip-path: polygon(0 18%, 100% 0, 78% 100%, 0 82%);
+  opacity: 0.07;
+  animation: drift-a 34s ease-in-out infinite alternate;
+}
+
+.bg__shape--b {
+  inset: 40% -25% -35% 40%;
+  background: var(--bone);
+  clip-path: polygon(22% 0, 100% 12%, 100% 88%, 0 100%);
+  opacity: 0.04;
+  animation: drift-b 46s ease-in-out infinite alternate;
+}
+
+.bg__stripes {
+  position: absolute;
+  inset: -20%;
+  color: var(--bone);
+  opacity: 0.035;
+}
+
+.bg__dots {
+  position: absolute;
+  inset: 0;
+  color: var(--bone);
+  opacity: 0.09;
+}
+
+/* Estallido dentado: geometria original, giro muy lento. */
+.bg__burst {
+  position: absolute;
+  top: -18vmax;
+  right: -18vmax;
+  width: 58vmax;
+  height: 58vmax;
+  color: var(--blood);
+  opacity: 0.1;
+  animation: burst-spin 180s linear infinite;
+}
+
+/* --- Barrido diagonal de transicion ---
+   Tres elementos, un trabajo cada uno:
+   .wipe  fijo y contenido, nunca se mueve
+   .wipe__skew  inclinacion y dentado ESTATICOS, nunca se animan
+   .wipe__bar  lo unico que se anima, y solo con transform */
+
+.wipe {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-wipe);
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.wipe__skew {
+  position: absolute;
+  inset: -25vmax -35vmax;
+  transform: skewX(-14deg);
+}
+
+.wipe__bar {
+  position: absolute;
+  inset: 0;
+  background: var(--blood);
+  /* Losa negra que persigue a la roja: barrido de dos tonos sin nodos extra. */
+  box-shadow: 9vw 0 0 0 var(--void);
+  transform: translate3d(-140%, 0, 0);
+  will-change: transform;
+}
