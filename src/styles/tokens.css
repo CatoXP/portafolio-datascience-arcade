@@ -1,0 +1,73 @@
+/* Tokens de diseno. Este es el unico lugar donde se declaran colores,
+   duraciones y distancias. La estrategia de prefers-reduced-motion consiste
+   en sobrescribir los tokens de movimiento aqui mismo (ver motion.css). */
+
+:root {
+  /* --- Color: 5 tokens. Ratios de contraste verificados. ---
+     bone/void  17.0:1   bone/iron  15.4:1   ash/void   5.8:1
+     blood/void  5.4:1   void/blood  5.4:1   blood/iron  4.9:1
+     Todas pasan WCAG AA para texto normal. */
+  --void: #0a0a0b;
+  --blood: #ff2e3a;
+  --bone: #f2ede3;
+  --ash: #8a8a8f;
+  --iron: #17171a;
+
+  /* Tipografia */
+  --ff-display: 'Anton', 'Arial Narrow', 'Haettenschweiler', sans-serif;
+  --ff-body: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+
+  --fs-hero: clamp(4rem, 17vw, 13rem);
+  --fs-h2: clamp(2.25rem, 8vw, 5.5rem);
+  --fs-h3: clamp(1.15rem, 2.6vw, 1.6rem);
+  --fs-body: clamp(0.95rem, 0.9rem + 0.25vw, 1.0625rem);
+  --fs-label: clamp(0.65rem, 1.4vw, 0.75rem);
+  --fs-meta: 0.7rem;
+
+  --lh-display: 0.84;
+  --lh-body: 1.65;
+  --tracking-label: 0.18em;
+  --tracking-display: -0.015em;
+
+  /* Espaciado, base 4px */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+
+  /* Geometria compartida */
+  --skew: -9deg;
+  --skew-soft: -4deg;
+  --notch: clamp(0.7rem, 1.8vw, 1.5rem);
+  --rail-w: clamp(13rem, 21vw, 17.5rem);
+  --rail-h: 3.25rem; /* alto de la tira horizontal en movil */
+
+  /* Movimiento. Estos son los tokens que anula reduced-motion. */
+  --dur-fast: 120ms;
+  --dur-mid: 260ms;
+  --dur-slow: 300ms;
+  --dur-stagger: 55ms;
+  --travel-sm: 8px;
+  --travel-md: 28px;
+  --travel-lg: 64px;
+  --letter-rise: 90px;
+  --letter-spin: 14deg;
+  --drift: 1;
+
+  --ease-in-hard: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-out-hard: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-snap: cubic-bezier(0.2, 1.6, 0.4, 1);
+
+  /* Capas */
+  --z-bg: 0;
+  --z-stage: 1;
+  --z-rail: 10;
+  --z-wipe: 100;
+  --z-skip: 200;
+}
