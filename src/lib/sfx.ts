@@ -119,27 +119,39 @@ function metallicHit(
   }
 }
 
-/* Confirmacion: brillante y con cola, centrada en la region de 7 kHz, que es
-   donde vive el caracter de este tipo de sonido de menu. Grave = golpe sordo;
-   agudo = chasquido de cristal, que es el que encaja con la estetica. */
+/* Confirmacion.
+
+   Las frecuencias y los pesos relativos salen de medir el espectro de un
+   chasquido de menu de referencia: fundamental dominante en 6.5 kHz, un
+   segundo pico fuerte en 11.2 kHz (de ahi el brillo cristalino) y apoyos
+   en 4.1, 7.2 y 10.7 kHz. Las razones entre ellas no son enteras, que es lo
+   que hace que se perciba como metal golpeado y no como una nota.
+
+   Ataque de 4 ms y cola que cae al 10% unos 80 ms despues del golpe: corto y
+   seco, no una campana larga. */
+const K = 0.2;
+
 const CONFIRM_PARTIALS: readonly Partial[] = [
-  { hz: 7180, gain: 0.15, decay: 0.29 },
-  { hz: 4790, gain: 0.09, decay: 0.24 },
-  { hz: 9930, gain: 0.06, decay: 0.16 },
-  { hz: 3110, gain: 0.05, decay: 0.26 },
+  { hz: 6562, gain: 1.0 * K, decay: 0.2 },
+  { hz: 11190, gain: 0.31 * K, decay: 0.19 },
+  { hz: 4116, gain: 0.2 * K, decay: 0.21 },
+  { hz: 7205, gain: 0.14 * K, decay: 0.2 },
+  { hz: 10700, gain: 0.1 * K, decay: 0.19 },
+  { hz: 11580, gain: 0.09 * K, decay: 0.19 },
 ];
 
-/* Movimiento de cursor: la misma familia timbrica pero mas corta y discreta,
-   porque suena muchas veces seguidas. */
+/* Movimiento de cursor: el mismo timbre pero recortado y mas bajo, porque
+   suena muchas veces seguidas y cansa antes que el de confirmar. */
 const MOVE_PARTIALS: readonly Partial[] = [
-  { hz: 7210, gain: 0.085, decay: 0.075 },
-  { hz: 4810, gain: 0.045, decay: 0.06 },
+  { hz: 6562, gain: 0.5 * K, decay: 0.08 },
+  { hz: 11190, gain: 0.16 * K, decay: 0.075 },
+  { hz: 4116, gain: 0.1 * K, decay: 0.08 },
 ];
 
 function playMove(): void {
   const c = ensureContext();
   if (!c || !master) return;
-  metallicHit(c, master, MOVE_PARTIALS, 0.05, 5200);
+  metallicHit(c, master, MOVE_PARTIALS, 0.045, 6500);
 }
 
 function playConfirm(): void {
