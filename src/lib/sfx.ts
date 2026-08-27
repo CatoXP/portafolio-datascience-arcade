@@ -37,7 +37,8 @@ function ensureContext(): AudioContext | null {
 
     ctx = new Ctor();
     master = ctx.createGain();
-    master.gain.value = 0.5;
+    // Bajo a proposito: las parciales agudas cansan mucho antes que las graves.
+    master.gain.value = 0.38;
     master.connect(ctx.destination);
   }
 
@@ -57,71 +58,94 @@ function noiseBuffer(c: AudioContext, seconds: number): AudioBuffer {
   return buffer;
 }
 
-/** Blip corto y brillante: el cursor moviendose por la lista. */
+interface Partial {
+  hz: number;
+  gain: number;
+  decay: number;
+}
+
+/** Golpe metalico: parciales INARMONICAS con decaimientos distintos.
+
+   Un solo oscilador suena a pitido de sintetizador. Lo que da el caracter de
+   metal o cristal es que las frecuencias no sean multiplos enteras entre si y
+   que las agudas se apaguen antes que las graves, igual que en una campana. */
+function metallicHit(
+  c: AudioContext,
+  bus: GainNode,
+  partials: readonly Partial[],
+  noiseLevel: number,
+  noiseHz: number,
+): void {
+  const t = c.currentTime;
+
+  // Transitorio de ataque: el "chk" que hace que suene golpeado y no soplado.
+  if (noiseLevel > 0) {
+    const noise = c.createBufferSource();
+    noise.buffer = noiseBuffer(c, 0.03);
+
+    const band = c.createBiquadFilter();
+    band.type = 'bandpass';
+    band.frequency.value = noiseHz;
+    band.Q.value = 0.8;
+
+    const ng = c.createGain();
+    ng.gain.setValueAtTime(noiseLevel, t);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+
+    noise.connect(band).connect(ng).connect(bus);
+    noise.onended = () => ng.disconnect();
+    noise.start(t);
+    noise.stop(t + 0.04);
+  }
+
+  for (const p of partials) {
+    const osc = c.createOscillator();
+    const g = c.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(p.hz, t);
+    // Caida de tono minima durante el decaimiento: sin esto suena demasiado
+    // limpio y sintetico.
+    osc.frequency.exponentialRampToValueAtTime(p.hz * 0.985, t + p.decay);
+
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(p.gain, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + p.decay);
+
+    osc.connect(g).connect(bus);
+    osc.onended = () => g.disconnect();
+    osc.start(t);
+    osc.stop(t + p.decay + 0.02);
+  }
+}
+
+/* Confirmacion: brillante y con cola, centrada en la region de 7 kHz, que es
+   donde vive el caracter de este tipo de sonido de menu. Grave = golpe sordo;
+   agudo = chasquido de cristal, que es el que encaja con la estetica. */
+const CONFIRM_PARTIALS: readonly Partial[] = [
+  { hz: 7180, gain: 0.15, decay: 0.29 },
+  { hz: 4790, gain: 0.09, decay: 0.24 },
+  { hz: 9930, gain: 0.06, decay: 0.16 },
+  { hz: 3110, gain: 0.05, decay: 0.26 },
+];
+
+/* Movimiento de cursor: la misma familia timbrica pero mas corta y discreta,
+   porque suena muchas veces seguidas. */
+const MOVE_PARTIALS: readonly Partial[] = [
+  { hz: 7210, gain: 0.085, decay: 0.075 },
+  { hz: 4810, gain: 0.045, decay: 0.06 },
+];
+
 function playMove(): void {
   const c = ensureContext();
   if (!c || !master) return;
-
-  const t = c.currentTime;
-  const osc = c.createOscillator();
-  const gain = c.createGain();
-
-  osc.type = 'square';
-  osc.frequency.setValueAtTime(1180, t);
-  osc.frequency.exponentialRampToValueAtTime(720, t + 0.05);
-
-  gain.gain.setValueAtTime(0.0001, t);
-  gain.gain.exponentialRampToValueAtTime(0.13, t + 0.005);
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
-
-  osc.connect(gain).connect(master);
-  osc.onended = () => gain.disconnect();
-  osc.start(t);
-  osc.stop(t + 0.08);
+  metallicHit(c, master, MOVE_PARTIALS, 0.05, 5200);
 }
 
-/** Golpe de confirmacion: ruido filtrado sobre un barrido grave. */
 function playConfirm(): void {
   const c = ensureContext();
   if (!c || !master) return;
-
-  const t = c.currentTime;
-
-  // Capa 1: chasquido de ruido pasado por un pasabanda.
-  const noise = c.createBufferSource();
-  noise.buffer = noiseBuffer(c, 0.09);
-
-  const band = c.createBiquadFilter();
-  band.type = 'bandpass';
-  band.frequency.setValueAtTime(2600, t);
-  band.frequency.exponentialRampToValueAtTime(900, t + 0.09);
-  band.Q.value = 1.4;
-
-  const noiseGain = c.createGain();
-  noiseGain.gain.setValueAtTime(0.22, t);
-  noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
-
-  noise.connect(band).connect(noiseGain).connect(master);
-  noise.onended = () => noiseGain.disconnect();
-  noise.start(t);
-  noise.stop(t + 0.1);
-
-  // Capa 2: cuerpo grave que le da el peso.
-  const osc = c.createOscillator();
-  const oscGain = c.createGain();
-
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(420, t);
-  osc.frequency.exponentialRampToValueAtTime(150, t + 0.14);
-
-  oscGain.gain.setValueAtTime(0.0001, t);
-  oscGain.gain.exponentialRampToValueAtTime(0.2, t + 0.008);
-  oscGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
-
-  osc.connect(oscGain).connect(master);
-  osc.onended = () => oscGain.disconnect();
-  osc.start(t);
-  osc.stop(t + 0.17);
+  metallicHit(c, master, CONFIRM_PARTIALS, 0.13, 6400);
 }
 
 export const sfx = {

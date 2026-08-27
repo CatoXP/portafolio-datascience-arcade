@@ -1,8 +1,32 @@
 /* Tipografia base, fondo y foco. */
 
+/* Cursores propios, dibujados aqui como SVG en linea. Geometria original:
+   una punta de cuchilla angulosa con esquinas en inglete, a juego con el
+   resto del vocabulario del sitio. El punto activo va en la punta (2 2).
+   Se dejan en 32px y con contorno duro para que sigan siendo faciles de
+   seguir; un cursor decorativo que no se ve es un problema de usabilidad. */
+:root {
+  --cursor-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M2 2 L25 12.5 L14.5 15 L21 27 L16 29.5 L9.5 17.5 L2 23.5 Z' fill='%23FF2E3A' stroke='%230A0A0B' stroke-width='2.6' stroke-linejoin='miter'/%3E%3C/svg%3E")
+    2 2, auto;
+  --cursor-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M2 2 L25 12.5 L14.5 15 L21 27 L16 29.5 L9.5 17.5 L2 23.5 Z' fill='%23F2EDE3' stroke='%23FF2E3A' stroke-width='2.6' stroke-linejoin='miter'/%3E%3C/svg%3E")
+    2 2, pointer;
+}
+
 html {
   background: var(--void);
   color-scheme: dark;
+  cursor: var(--cursor-default);
+}
+
+/* Lo interactivo invierte el relleno del cursor. Los campos de texto se
+   quedan con el cursor de sistema: ahi el signo de insercion es informacion. */
+a,
+button,
+[role='tab'],
+summary,
+label[for],
+select {
+  cursor: var(--cursor-active);
 }
 
 body {
