@@ -1,0 +1,496 @@
+/* Contenido de las cinco secciones. */
+
+.section {
+  display: grid;
+  gap: var(--sp-6);
+  align-content: start;
+  max-width: 78ch;
+}
+
+.section__kicker {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+  color: var(--blood);
+}
+
+.section__kicker::after {
+  flex: 1;
+  height: 2px;
+  content: '';
+  background: var(--blood);
+  opacity: 0.4;
+}
+
+.section__title {
+  font-size: var(--fs-h2);
+  color: var(--bone);
+}
+
+.section__title em {
+  font-style: normal;
+  color: var(--blood);
+}
+
+.prose {
+  display: grid;
+  gap: var(--sp-4);
+  max-width: 68ch;
+  color: var(--bone);
+}
+
+.prose strong {
+  font-weight: 700;
+  color: var(--blood);
+}
+
+/* ------------------------------------------------------------------
+   INICIO — el elemento firma
+   ------------------------------------------------------------------ */
+
+.hero {
+  display: grid;
+  gap: var(--sp-6);
+  align-content: center;
+  min-height: 100%;
+  max-width: none;
+}
+
+.ransom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.06em 0.04em;
+  align-items: center;
+  margin: 0;
+  font-size: var(--fs-hero);
+  line-height: 1;
+}
+
+/* Cada letra es un recorte de papel. La rotacion propia (--rot) se repite
+   dentro de los keyframes para que la animacion no la borre. Las letras van
+   con aria-hidden y el nombre real vive en el aria-label del contenedor. */
+.ransom__letter {
+  display: inline-grid;
+  place-items: center;
+  padding: 0.02em 0.1em 0.06em;
+  font-family: var(--ff-display);
+  font-size: calc(1em * var(--scale, 1));
+  line-height: 0.98;
+  clip-path: var(--clip);
+  transform: rotate(var(--rot));
+  animation: letter-land var(--dur-slow) var(--ease-snap) both;
+  animation-delay: calc(var(--i) * var(--dur-stagger));
+}
+
+/* Variante tipografica: la mezcla de dos familias es lo que da la sensacion
+   de recortes de dos revistas distintas. */
+.ransom__letter--sans {
+  padding-inline: 0.08em;
+  font-family: var(--ff-body);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+/* Cuatro tratamientos de papel. Todos pasan AA incluso como texto normal. */
+.ransom__letter--a {
+  color: var(--void);
+  background: var(--bone);
+}
+
+.ransom__letter--b {
+  color: var(--void);
+  background: var(--blood);
+}
+
+.ransom__letter--c {
+  color: var(--bone);
+  background: var(--void);
+  box-shadow: inset 0 0 0 3px var(--bone);
+}
+
+.ransom__letter--d {
+  color: var(--blood);
+  background: var(--void);
+  box-shadow: inset 0 0 0 3px var(--blood);
+}
+
+@media (hover: hover) {
+  .ransom__letter {
+    transition: transform var(--dur-fast) var(--ease-snap);
+  }
+
+  .ransom__letter:hover {
+    transform: rotate(calc(var(--rot) * -1.4)) scale(1.08);
+  }
+}
+
+.hero__role {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  color: var(--bone);
+}
+
+.hero__role span {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: center;
+}
+
+.hero__role span:not(:last-child)::after {
+  width: 6px;
+  height: 6px;
+  content: '';
+  background: var(--blood);
+  transform: rotate(45deg);
+}
+
+.hero__place {
+  color: var(--ash);
+}
+
+.hero__alias {
+  display: inline-block;
+  /* Sin esto el grid del hero lo estira a todo el ancho. */
+  justify-self: start;
+  padding: var(--sp-2) var(--sp-4);
+  color: var(--void);
+  background: var(--bone);
+  clip-path: var(--clip-notch-br);
+  transform: skewX(var(--skew));
+}
+
+.hero__alias > span {
+  display: block;
+  transform: skewX(calc(-1 * var(--skew)));
+}
+
+/* ------------------------------------------------------------------
+   SOBRE MI
+   ------------------------------------------------------------------ */
+
+.about {
+  display: grid;
+  gap: var(--sp-8);
+}
+
+.portrait {
+  position: relative;
+  align-self: start;
+  max-width: 260px;
+  background: var(--bone);
+  clip-path: var(--clip-notch-br);
+  /* Losa roja desplazada detras. Tiene que ser drop-shadow y no box-shadow:
+     clip-path recorta la sombra de caja, pero el filtro se aplica DESPUES del
+     recorte, asi que la sombra sigue la silueta ya recortada. */
+  filter: drop-shadow(11px 11px 0 var(--blood));
+}
+
+/* Serigrafia: alto contraste en blanco y negro multiplicado sobre el crema.
+   El fondo blanco de la foto original se funde con el crema y desaparece,
+   asi que el recorte sale gratis sin retocar el archivo.
+   height:auto es imprescindible: el <img> lleva atributos width/height y sin
+   esto el alto del atributo gana y la foto sale estirada. */
+.portrait__img {
+  width: 100%;
+  height: auto;
+  filter: grayscale(1) contrast(1.45) brightness(1.08);
+  mix-blend-mode: multiply;
+}
+
+.portrait__grain {
+  position: absolute;
+  inset: 0;
+  color: var(--void);
+  pointer-events: none;
+}
+
+.facts {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  background: var(--iron);
+  clip-path: var(--clip-notch-tl);
+}
+
+/* Apilado siempre, no space-between: con flex, las filas cortas quedaban en
+   una linea y las largas se partian, y la columna se veia desalineada. */
+.facts__row {
+  display: grid;
+  gap: var(--sp-1);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid rgb(138 138 143 / 30%);
+}
+
+.facts__row:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.facts__key {
+  color: var(--ash);
+}
+
+.facts__val {
+  margin: 0;
+  color: var(--bone);
+}
+
+@media (min-width: 900px) {
+  .about {
+    grid-template-columns: 260px 1fr;
+    align-items: start;
+  }
+
+  .about__aside {
+    display: grid;
+    gap: var(--sp-6);
+  }
+}
+
+/* ------------------------------------------------------------------
+   PROYECTOS
+   ------------------------------------------------------------------ */
+
+.projects {
+  display: grid;
+  gap: var(--sp-5);
+  max-width: none;
+}
+
+@media (min-width: 900px) {
+  .projects {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  }
+}
+
+.card {
+  position: relative;
+}
+
+/* El fondo recortado vive en un ::before para que el recorte no se coma el
+   anillo de foco del enlace. */
+.card::before {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: var(--iron);
+  clip-path: var(--clip-notch-br);
+  transition: background var(--dur-fast) linear;
+}
+
+.card:hover::before {
+  background: #1f1f24;
+}
+
+.card__link {
+  position: relative;
+  display: grid;
+  gap: var(--sp-3);
+  height: 100%;
+  padding: var(--sp-5);
+  text-decoration: none;
+  border-left: 4px solid var(--blood);
+}
+
+.card__index {
+  color: var(--blood);
+}
+
+/* Los titulares de tarjeta se parten en dos lineas a menudo, y el
+   line-height de display (0.84) los solapa. Aqui se afloja. */
+.card__title {
+  font-size: var(--fs-h3);
+  line-height: 1.05;
+  color: var(--bone);
+}
+
+.card__desc {
+  color: var(--ash);
+}
+
+.card__metric {
+  align-self: start;
+  padding: var(--sp-1) var(--sp-3);
+  color: var(--void);
+  background: var(--blood);
+}
+
+.card__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: auto;
+  padding-top: var(--sp-2);
+}
+
+.card__tag {
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--fs-meta);
+  color: var(--ash);
+  border: 1px solid rgb(138 138 143 / 40%);
+}
+
+.card__cta {
+  color: var(--blood);
+}
+
+.card__link:hover .card__cta {
+  color: var(--bone);
+}
+
+/* ------------------------------------------------------------------
+   SKILLS
+   ------------------------------------------------------------------ */
+
+.skills {
+  display: grid;
+  gap: var(--sp-8);
+  max-width: none;
+}
+
+.skillgroup {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.skillgroup__name {
+  color: var(--blood);
+}
+
+.skill {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.skill__head {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.skill__name {
+  color: var(--bone);
+}
+
+/* El valor va como texto: el nivel no puede depender solo del largo de la
+   barra (WCAG 1.4.1). La barra es decorativa y va con aria-hidden. */
+.skill__value {
+  font-family: var(--ff-display);
+  font-size: 1.1rem;
+  color: var(--blood);
+}
+
+.skillgroup__list {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+/* display:block es obligatorio: son <span>, y un elemento inline ignora
+   height y transform, asi que sin esto la barra no se pinta ni se inclina. */
+.skill__track {
+  position: relative;
+  display: block;
+  height: 14px;
+  overflow: hidden;
+  background: var(--iron);
+  transform: skewX(var(--skew));
+}
+
+.skill__fill {
+  display: block;
+  height: 100%;
+  background: var(--blood);
+  transform-origin: left center;
+  /* El keyframe termina en scaleX(var(--level)), no en 1: si terminara en 1
+     con fill:both, todas las barras acabarian llenas al 100%. */
+  transform: scaleX(var(--level));
+  animation: meter-fill var(--dur-slow) var(--ease-out-hard) both;
+  animation-delay: calc(var(--i, 0) * var(--dur-stagger));
+}
+
+/* Segmentacion en bloques, encima del relleno. */
+.skill__track::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 calc(5% - 3px),
+    var(--void) calc(5% - 3px) 5%
+  );
+}
+
+/* ------------------------------------------------------------------
+   CONTACTO
+   ------------------------------------------------------------------ */
+
+.contact {
+  display: grid;
+  gap: var(--sp-6);
+}
+
+.contact__links {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+@media (min-width: 640px) {
+  .contact__links {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+}
+
+.contact__link {
+  position: relative;
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+  justify-content: space-between;
+  /* El correo es largo y no tiene espacios donde partir. */
+  overflow-wrap: anywhere;
+  padding: var(--sp-4) var(--sp-5);
+  color: var(--bone);
+  text-decoration: none;
+  background: var(--iron);
+  border-left: 4px solid var(--blood);
+  transition:
+    background var(--dur-fast) linear,
+    color var(--dur-fast) linear;
+}
+
+.contact__link:hover {
+  color: var(--void);
+  background: var(--blood);
+}
+
+.contact__link span:last-child {
+  color: var(--blood);
+  transition: color var(--dur-fast) linear;
+}
+
+.contact__link:hover span:last-child {
+  color: var(--void);
+}
+
+.contact__cv {
+  display: inline-flex;
+  gap: var(--sp-3);
+  align-items: center;
+  justify-self: start;
+  padding: var(--sp-4) var(--sp-6);
+  color: var(--void);
+  text-decoration: none;
+  background: var(--bone);
+  transition: background var(--dur-fast) linear;
+}
+
+.contact__cv:hover {
+  color: var(--void);
+  background: var(--blood);
+}
+
+.contact__note {
+  color: var(--ash);
+}
