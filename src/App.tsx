@@ -154,7 +154,7 @@ export default function App() {
           <span className="rail__brand">
             CATOXP <em>//</em> BUGS
           </span>
-          <span className="rail__meta u-label">CDMX · Datos · Automatización</span>
+          <span className="rail__meta u-label">CDMX · Ciencia de datos · Finanzas · IA</span>
           <button
             type="button"
             className="rail__sound u-label"

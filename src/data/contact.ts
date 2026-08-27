@@ -9,7 +9,8 @@ export const CONTACT_LINKS: readonly ContactLink[] = [
   {
     label: 'LinkedIn',
     value: 'brandon-uriel-garcia-sanchez',
-    href: 'https://www.linkedin.com/in/brandon-uriel-garcia-sanchez',
+    // El sufijo numerico es parte de la URL real: sin el, el enlace da 404.
+    href: 'https://www.linkedin.com/in/brandon-uriel-garcia-sanchez-9ab77b320',
   },
   {
     label: 'Correo',

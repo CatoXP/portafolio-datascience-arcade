@@ -33,6 +33,17 @@ export function SobreMi() {
               </div>
             ))}
           </dl>
+
+          <section className="certs">
+            <h3 className="skillgroup__name u-label">Certificaciones</h3>
+            <ul className="certs__list">
+              {PROFILE.certs.map((cert) => (
+                <li className="certs__item" key={cert}>
+                  {cert}
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
 
         <div className="prose" data-stagger style={{ ['--i' as string]: 3 }}>

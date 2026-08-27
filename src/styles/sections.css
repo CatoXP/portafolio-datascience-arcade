@@ -124,11 +124,22 @@
   }
 }
 
+/* Posicionamiento principal, justo debajo del nombre. */
+.hero__headline {
+  max-width: 22ch;
+  font-family: var(--ff-display);
+  font-size: clamp(1.5rem, 4.2vw, 2.75rem);
+  line-height: 1.02;
+  color: var(--bone);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-display);
+}
+
 .hero__role {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-2) var(--sp-4);
-  color: var(--bone);
+  color: var(--blood);
 }
 
 .hero__role span {
@@ -234,6 +245,27 @@
 .facts__val {
   margin: 0;
   color: var(--bone);
+}
+
+.certs {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  background: var(--iron);
+  clip-path: var(--clip-notch-br);
+}
+
+.certs__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.certs__item {
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-meta);
+  color: var(--ash);
+  border-left: 2px solid var(--blood);
 }
 
 @media (min-width: 900px) {
