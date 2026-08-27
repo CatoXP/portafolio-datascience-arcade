@@ -137,30 +137,50 @@ function metallicHit(
    graves, como en cualquier cuerpo resonante real. */
 const K = 0.13;
 
+/* Diseño propio de un golpe metalico brillante, con tres tecnicas prestadas
+   de como suenan los cuerpos resonantes reales. Las frecuencias son mias:
+   fundamental en 6200 Hz y una serie inarmonica elegida a mano.
+
+   1. PARES DESAFINADOS. Un cuerpo metalico no vibra en tonos limpios y
+      aislados. Dos parciales separadas 12-18 Hz producen batido: la amplitud
+      del par sube y baja varias veces por segundo, y eso se oye como temblor
+      o brillo vivo. Un tono unico y perfectamente afinado suena a pitido de
+      sintetizador por muy bien colocado que este; es lo que fallaba antes.
+
+   2. DECAIMIENTOS DESIGUALES. Las parciales agudas se apagan antes que las
+      graves, como en cualquier campana. Si todas caen a la vez, el sonido se
+      percibe apagado de golpe y artificial.
+
+   3. CUERPO BAJO EL BRILLO. Aunque el caracter viva en los agudos, hace falta
+      algo de energia por debajo de 3 kHz o el resultado se oye delgado y mas
+      agudo de lo que realmente es. */
 const CONFIRM_PARTIALS: readonly Partial[] = [
-  // Nucleo: donde vive tres cuartas partes de la energia.
-  { hz: 6562, gain: 1.0 * K, decay: 0.36 },
-  { hz: 7205, gain: 0.5 * K, decay: 0.34 },
-  // Brillo.
-  { hz: 11190, gain: 0.3 * K, decay: 0.3 },
-  { hz: 10700, gain: 0.18 * K, decay: 0.28 },
-  { hz: 11580, gain: 0.14 * K, decay: 0.28 },
-  { hz: 4116, gain: 0.38 * K, decay: 0.38 },
-  // Cuerpo: poca energia, pero es lo que evita que suene a pitido pelado.
-  { hz: 2790, gain: 0.22 * K, decay: 0.4 },
-  { hz: 1662, gain: 0.21 * K, decay: 0.42 },
-  { hz: 905, gain: 0.14 * K, decay: 0.44 },
-  { hz: 118, gain: 0.11 * K, decay: 0.4 },
+  // Cuerpo: poca energia, pero evita que suene a pitido pelado.
+  { hz: 890, gain: 0.12 * K, decay: 0.34 },
+  { hz: 1674, gain: 0.16 * K, decay: 0.32 },
+  { hz: 2604, gain: 0.18 * K, decay: 0.3 },
+  { hz: 4092, gain: 0.3 * K, decay: 0.28 },
+  // Nucleo, par desafinado ~13 Hz de batido.
+  { hz: 6200, gain: 1.0 * K, decay: 0.24 },
+  { hz: 6213, gain: 0.55 * K, decay: 0.24 },
+  // Segundo par, ~16 Hz, se apaga antes.
+  { hz: 6944, gain: 0.22 * K, decay: 0.16 },
+  { hz: 6960, gain: 0.19 * K, decay: 0.16 },
+  // Destello agudo, ~18 Hz, con mas cola.
+  { hz: 10788, gain: 0.16 * K, decay: 0.26 },
+  { hz: 10806, gain: 0.13 * K, decay: 0.26 },
+  { hz: 11460, gain: 0.09 * K, decay: 0.15 },
 ];
 
-/* Movimiento de cursor: mismo timbre, recortado. Suena muchas veces seguidas,
-   asi que va mas corto y mas bajo para no cansar. */
+/* Movimiento de cursor: el mismo cuerpo recortado. Se conserva el par que
+   bate porque de ahi sale el caracter; sin el suena a otro sonido, no a una
+   version corta del mismo. */
 const MOVE_PARTIALS: readonly Partial[] = [
-  { hz: 6562, gain: 0.55 * K, decay: 0.11 },
-  { hz: 7205, gain: 0.27 * K, decay: 0.1 },
-  { hz: 11190, gain: 0.16 * K, decay: 0.09 },
-  { hz: 4116, gain: 0.2 * K, decay: 0.12 },
-  { hz: 1662, gain: 0.11 * K, decay: 0.13 },
+  { hz: 4092, gain: 0.2 * K, decay: 0.1 },
+  { hz: 6200, gain: 0.6 * K, decay: 0.09 },
+  { hz: 6213, gain: 0.33 * K, decay: 0.09 },
+  { hz: 10788, gain: 0.12 * K, decay: 0.1 },
+  { hz: 11460, gain: 0.07 * K, decay: 0.08 },
 ];
 
 function playMove(): void {
