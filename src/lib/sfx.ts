@@ -121,31 +121,46 @@ function metallicHit(
 
 /* Confirmacion.
 
-   Las frecuencias y los pesos relativos salen de medir el espectro de un
-   chasquido de menu de referencia: fundamental dominante en 6.5 kHz, un
-   segundo pico fuerte en 11.2 kHz (de ahi el brillo cristalino) y apoyos
-   en 4.1, 7.2 y 10.7 kHz. Las razones entre ellas no son enteras, que es lo
-   que hace que se perciba como metal golpeado y no como una nota.
+   Las ganancias reproducen la DISTRIBUCION DE ENERGIA POR BANDAS de un
+   chasquido de menu de referencia, no solo sus picos. La diferencia importa:
+   buscando picos estrechos solo aparecen los agudos, porque la energia grave
+   es de banda ancha y no hace pico. Sintetizar solo los picos daba un sonido
+   correcto de tono pero sin cuerpo, y un agudo sin cuerpo se percibe todavia
+   mas agudo y mas seco de lo que es.
 
-   Ataque de 4 ms y cola que cae al 10% unos 80 ms despues del golpe: corto y
-   seco, no una campana larga. */
-const K = 0.2;
+   Reparto objetivo: ~75% en 5.5-8 kHz, ~9% en 8-12 kHz, ~8% en 3.5-5.5 kHz
+   y el ~8% restante repartido por debajo de 3.5 kHz. Amplitud proporcional a
+   la raiz de la fraccion de energia.
+
+   Las razones entre parciales no son enteras: eso es lo que se percibe como
+   metal golpeado y no como una nota. Las agudas se apagan antes que las
+   graves, como en cualquier cuerpo resonante real. */
+const K = 0.13;
 
 const CONFIRM_PARTIALS: readonly Partial[] = [
-  { hz: 6562, gain: 1.0 * K, decay: 0.2 },
-  { hz: 11190, gain: 0.31 * K, decay: 0.19 },
-  { hz: 4116, gain: 0.2 * K, decay: 0.21 },
-  { hz: 7205, gain: 0.14 * K, decay: 0.2 },
-  { hz: 10700, gain: 0.1 * K, decay: 0.19 },
-  { hz: 11580, gain: 0.09 * K, decay: 0.19 },
+  // Nucleo: donde vive tres cuartas partes de la energia.
+  { hz: 6562, gain: 1.0 * K, decay: 0.36 },
+  { hz: 7205, gain: 0.5 * K, decay: 0.34 },
+  // Brillo.
+  { hz: 11190, gain: 0.3 * K, decay: 0.3 },
+  { hz: 10700, gain: 0.18 * K, decay: 0.28 },
+  { hz: 11580, gain: 0.14 * K, decay: 0.28 },
+  { hz: 4116, gain: 0.38 * K, decay: 0.38 },
+  // Cuerpo: poca energia, pero es lo que evita que suene a pitido pelado.
+  { hz: 2790, gain: 0.22 * K, decay: 0.4 },
+  { hz: 1662, gain: 0.21 * K, decay: 0.42 },
+  { hz: 905, gain: 0.14 * K, decay: 0.44 },
+  { hz: 118, gain: 0.11 * K, decay: 0.4 },
 ];
 
-/* Movimiento de cursor: el mismo timbre pero recortado y mas bajo, porque
-   suena muchas veces seguidas y cansa antes que el de confirmar. */
+/* Movimiento de cursor: mismo timbre, recortado. Suena muchas veces seguidas,
+   asi que va mas corto y mas bajo para no cansar. */
 const MOVE_PARTIALS: readonly Partial[] = [
-  { hz: 6562, gain: 0.5 * K, decay: 0.08 },
-  { hz: 11190, gain: 0.16 * K, decay: 0.075 },
-  { hz: 4116, gain: 0.1 * K, decay: 0.08 },
+  { hz: 6562, gain: 0.55 * K, decay: 0.11 },
+  { hz: 7205, gain: 0.27 * K, decay: 0.1 },
+  { hz: 11190, gain: 0.16 * K, decay: 0.09 },
+  { hz: 4116, gain: 0.2 * K, decay: 0.12 },
+  { hz: 1662, gain: 0.11 * K, decay: 0.13 },
 ];
 
 function playMove(): void {
