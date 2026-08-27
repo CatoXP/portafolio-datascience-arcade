@@ -1,0 +1,11 @@
+/* Punto de entrada de estilos. El orden importa: tokens antes que todo lo
+   que los consume. Las fuentes se importan desde main.tsx. */
+
+@import './reset.css';
+@import './tokens.css';
+@import './base.css';
+@import './shapes.css';
+@import './motion.css';
+@import './layout.css';
+@import './menu.css';
+@import './sections.css';
