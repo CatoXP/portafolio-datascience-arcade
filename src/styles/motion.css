@@ -1,0 +1,139 @@
+/* Keyframes compartidos y la estrategia de reduced-motion.
+
+   Todas las animaciones se escriben contra TOKENS de duracion y distancia.
+   Reducir el movimiento consiste en anular esos tokens en un solo bloque al
+   final, no en duplicar cada @keyframes.
+
+   Nota: cada keyframe que se aplica a un elemento con transform estatico
+   REPITE ese transform en cada paso. Si no, la animacion lo sobrescribe y la
+   pieza se endereza a mitad de vuelo. */
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--travel-md), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(-1 * var(--travel-lg)), 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Aterrizaje de cada letra del hero. Conserva la rotacion propia (--rot)
+   en los tres pasos. */
+@keyframes letter-land {
+  0% {
+    opacity: 0;
+    transform: rotate(calc(var(--rot) + var(--letter-spin))) translate3d(calc(var(--letter-rise) * var(--dir)), calc(var(--letter-rise) * -1), 0) scale(0.55);
+  }
+  70% {
+    opacity: 1;
+    transform: rotate(calc(var(--rot) - 1.5deg)) translate3d(0, 0, 0) scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(var(--rot)) translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Tic del item activo del menu. Conserva el skew del token. */
+@keyframes slab-wobble {
+  0%,
+  100% {
+    transform: skewX(var(--skew)) rotate(-0.45deg);
+  }
+  50% {
+    transform: skewX(var(--skew)) rotate(0.45deg);
+  }
+}
+
+/* Deriva lenta del fondo. */
+@keyframes drift-a {
+  from {
+    transform: translate3d(-4%, -2%, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(4%, 2%, 0) rotate(6deg);
+  }
+}
+
+@keyframes drift-b {
+  from {
+    transform: translate3d(3%, 1%, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(-3%, -3%, 0) rotate(-8deg);
+  }
+}
+
+@keyframes burst-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Termina en el nivel real de la skill, no en 1: con fill:both el ultimo
+   fotograma es el estado que queda pintado, y scaleX(1) dejaria todas las
+   barras al maximo. */
+@keyframes meter-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(var(--level));
+  }
+}
+
+/* Entrada escalonada de los hijos de un panel. El indice --i lo pone el TSX. */
+[data-stagger] {
+  animation: rise-in var(--dur-mid) var(--ease-out-hard) both;
+  animation-delay: calc(var(--i, 0) * var(--dur-stagger));
+}
+
+/* ------------------------------------------------------------------
+   prefers-reduced-motion
+   Se colapsan los tokens: los keyframes interpolan hacia cero y el
+   movimiento desaparece, pero el cambio de estado se sigue percibiendo
+   por opacidad y color. Se usa 1ms y no 0ms para que los eventos
+   animationend/transitionend sigan disparando y ninguna maquina de
+   estados se quede colgada.
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-mid: 1ms;
+    --dur-slow: 1ms;
+    --dur-stagger: 0ms;
+    --travel-sm: 0px;
+    --travel-md: 0px;
+    --travel-lg: 0px;
+    --letter-rise: 0px;
+    --letter-spin: 0deg;
+  }
+
+  /* Lo unico que no se puede apagar bajando tokens: las animaciones
+     infinitas de ambiente. Se quitan por completo. */
+  .bg__shape,
+  .bg__burst,
+  .menu__shape {
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
