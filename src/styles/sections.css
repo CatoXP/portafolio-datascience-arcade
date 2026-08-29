@@ -255,6 +255,13 @@
   clip-path: var(--clip-notch-br);
 }
 
+/* Clase propia. Antes reutilizaba .skillgroup__name, que era solo un titulo
+   rojo; al convertirla en lomo vertical para Skills, este titulo se fue
+   rotado de rebote. Aqui va acostado. */
+.certs__name {
+  color: var(--blood);
+}
+
 .certs__list {
   display: flex;
   flex-wrap: wrap;

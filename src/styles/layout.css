@@ -31,6 +31,29 @@
   border-block: 2px solid var(--iron);
 }
 
+/* Los rieles eran negro plano y se veian muertos al lado del resto. Ahora
+   llevan trama diagonal y una luz corta desde arriba, muy tenues: dan materia
+   sin robarle atencion al contenido, que no se toca.
+
+   z-index -1 los mantiene por detras del texto del propio riel. Funciona
+   porque .rail y .rail-nav ya crean contexto de apilamiento con su z-index,
+   asi que el -1 no se escapa por debajo del fondo de la pagina. */
+.rail::before,
+.rail-nav::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: '';
+  pointer-events: none;
+  background-image:
+    linear-gradient(180deg, rgb(242 237 227 / 5%), transparent 45%),
+    repeating-linear-gradient(
+      -45deg,
+      rgb(242 237 227 / 3.5%) 0 1px,
+      transparent 1px 8px
+    );
+}
+
 .rail__brand {
   font-family: var(--ff-display);
   font-size: clamp(0.9rem, 2.4vw, 1.15rem);
@@ -304,8 +327,16 @@
   position: absolute;
   inset: 0;
   background: var(--blood);
-  /* Losa negra que persigue a la roja: barrido de dos tonos sin nodos extra. */
-  box-shadow: 9vw 0 0 0 var(--void);
+  /* Barrido de TRES tonos con un solo nodo. Las sombras se pintan en orden:
+     la primera tapa a la segunda, asi que solo asoma la franja que sobra.
+
+     La barra viaja hacia la derecha, de modo que estas van DELANTE de ella:
+     entra primero un filo crema fino, detras la losa negra y al final el
+     rojo. Ese filo claro es lo que convierte el destello plano en un corte
+     con canto; sin el, el rojo entraba como una mancha. */
+  box-shadow:
+    9vw 0 0 0 var(--void),
+    10vw 0 0 0 var(--bone);
   transform: translate3d(-140%, 0, 0);
   will-change: transform;
 }

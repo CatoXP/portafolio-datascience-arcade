@@ -35,7 +35,7 @@ export function SobreMi() {
           </dl>
 
           <section className="certs">
-            <h3 className="skillgroup__name u-label">Certificaciones</h3>
+            <h3 className="certs__name u-label">Certificaciones</h3>
             <ul className="certs__list">
               {PROFILE.certs.map((cert) => (
                 <li className="certs__item" key={cert}>
