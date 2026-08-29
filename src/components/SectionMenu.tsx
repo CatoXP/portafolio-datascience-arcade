@@ -15,8 +15,6 @@ interface Props {
   itemsRef: React.RefObject<Array<HTMLButtonElement | null>>;
 }
 
-const FALLBACK_BLURB = '';
-
 /** Menu de consola con semantica de tabs.
 
     Patron tablist/tab/tabpanel con activacion MANUAL: las flechas mueven el
@@ -82,8 +80,6 @@ export function SectionMenu({
     };
   }, [activeIndex, itemsRef]);
 
-  const blurb = SECTIONS[focusedIndex]?.blurb ?? FALLBACK_BLURB;
-
   return (
     <div className="rail-nav">
       <div
@@ -143,18 +139,10 @@ export function SectionMenu({
                   &#9654;
                 </span>
               </span>
-              <span className="u-visually-hidden">. {section.blurb}</span>
             </button>
           );
         })}
       </div>
-
-      <p className="menu__blurb" aria-hidden="true">
-        <span className="menu__blurbBar" />
-        <span key={focusedIndex} className="menu__blurbText">
-          {blurb}
-        </span>
-      </p>
     </div>
   );
 }

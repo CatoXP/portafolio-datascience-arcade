@@ -99,7 +99,6 @@
 
 /* Cursor y descripcion: solo en escritorio, donde la lista es vertical. */
 .menu__cursor,
-.menu__blurb,
 .menu__slab {
   display: none;
 }
@@ -207,31 +206,6 @@
 
   .menu__item[aria-selected='true'] .menu__cursor {
     opacity: 1;
-  }
-
-  /* --- Descripcion del item bajo el cursor --- */
-  .menu__blurb {
-    display: flex;
-    gap: var(--sp-3);
-    align-items: flex-start;
-    padding: var(--sp-5) var(--sp-5) var(--sp-8);
-    margin-top: auto;
-    font-size: 0.78rem;
-    line-height: 1.5;
-    color: var(--ash);
-  }
-
-  .menu__blurbBar {
-    flex: 0 0 auto;
-    width: 3px;
-    align-self: stretch;
-    background: var(--blood);
-  }
-
-  /* La key en el TSX cambia con el cursor y remonta este span, asi que la
-     animacion se vuelve a disparar en cada movimiento. */
-  .menu__blurbText {
-    animation: rise-in var(--dur-mid) var(--ease-out-hard) both;
   }
 }
 

@@ -22,7 +22,7 @@ import { Contacto } from './components/sections/Contacto';
 
 import { sfx } from './lib/sfx';
 
-const FALLBACK: SectionDef = { id: 'inicio', label: 'Inicio', blurb: '' };
+const FALLBACK: SectionDef = { id: 'inicio', label: 'Inicio' };
 const sectionAt = (i: number): SectionDef => SECTIONS[i] ?? FALLBACK;
 const indexOf = (id: SectionId): number => {
   const i = SECTIONS.findIndex((s) => s.id === id);
