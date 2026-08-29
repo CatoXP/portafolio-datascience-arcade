@@ -4,8 +4,6 @@ Portafolio personal de **Brandon Uriel García Sánchez** (CatoXP / BUGS), con u
 dirección visual de menú de consola: rojo, negro y crema, paneles inclinados,
 tipografía condensada enorme tipo recorte de revista y transiciones agresivas.
 
-Es un proyecto "for fun", separado del portafolio profesional. El diseño es el
-gancho, pero el contenido es real.
 
 ---
 
