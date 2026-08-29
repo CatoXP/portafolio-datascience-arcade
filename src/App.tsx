@@ -215,7 +215,7 @@ export default function App() {
               <b>Tab</b>Recorrer
             </span>
           </span>
-          <span className="rail__meta u-label">Diseño original · Sin assets de terceros</span>
+          <span className="rail__meta u-label">Diseño original</span>
         </footer>
       </div>
 
