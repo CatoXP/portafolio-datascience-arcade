@@ -1,8 +1,9 @@
 import type { Project } from './types';
 
-/* TODO (Uriel): rellenar `repo` con la URL de cada repositorio.
-   Mientras siga en null, la tarjeta se pinta sin enlace y con la etiqueta
-   "repo pendiente" en vez de fingir un link roto. */
+/* Los `repo` en null se pintan sin enlace y con la etiqueta "repo pendiente"
+   en vez de fingir un link roto. Quedan tres por confirmar: dos no tienen
+   repositorio publico todavia y el de credit scoring vive dentro de un
+   portafolio que agrupa varios proyectos. */
 
 export const PROJECTS: readonly Project[] = [
   {
@@ -28,13 +29,13 @@ export const PROJECTS: readonly Project[] = [
     title: 'Deserción escolar en la UNRC',
     desc: 'Investigación formal sobre los factores asociados al abandono escolar, con análisis exploratorio y un tablero en Power BI para que el área académica pueda explorar los cortes por su cuenta.',
     stack: ['Python', 'Power BI', 'Estadística'],
-    repo: null,
+    repo: 'https://github.com/CatoXP/Deserci-n-Escolar-EDA-DB',
   },
   {
     title: 'Detección temprana de patologías bovinas',
     desc: 'Visión por computadora y sensores para detectar enfermedades en ganado. El dataset se construyó desde cero: recolección, limpieza y etiquetado manual de las imágenes.',
     metric: '391 imágenes etiquetadas',
     stack: ['Python', 'OpenCV', 'YOLOv8', 'Random Forest'],
-    repo: null,
+    repo: 'https://github.com/CatoXP/Detecci-n-de-bovinos-con-redes-neuronales-convolucionales',
   },
 ];

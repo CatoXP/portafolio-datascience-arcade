@@ -17,6 +17,12 @@ export const CONTACT_LINKS: readonly ContactLink[] = [
     value: 'garciasanchezbrandonu@gmail.com',
     href: 'mailto:garciasanchezbrandonu@gmail.com',
   },
+  {
+    label: 'Teléfono',
+    value: '55 3507 4836',
+    // tel: con prefijo internacional para que funcione desde fuera de Mexico.
+    href: 'tel:+525535074836',
+  },
 ];
 
 /** Vive en public/. Se resuelve con asset() para respetar el base de Pages. */
