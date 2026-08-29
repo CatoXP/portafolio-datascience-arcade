@@ -89,12 +89,15 @@
 /* Termina en el nivel real de la skill, no en 1: con fill:both el ultimo
    fotograma es el estado que queda pintado, y scaleX(1) dejaria todas las
    barras al maximo. */
-@keyframes meter-fill {
+@keyframes cell-pop {
   from {
-    transform: scaleX(0);
+    opacity: 0;
+    transform: skewX(var(--skew)) scaleY(0.15);
   }
+
   to {
-    transform: scaleX(var(--level));
+    opacity: 1;
+    transform: skewX(var(--skew)) scaleY(1);
   }
 }
 
