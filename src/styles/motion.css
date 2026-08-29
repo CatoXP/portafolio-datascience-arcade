@@ -131,7 +131,7 @@
   /* Lo unico que no se puede apagar bajando tokens: las animaciones
      infinitas de ambiente. Se quitan por completo. */
   .bg__shape,
-  .bg__burst,
+  .bg__art,
   .menu__shape {
     animation: none !important;
   }

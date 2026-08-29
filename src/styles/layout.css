@@ -31,14 +31,13 @@
   border-block: 2px solid var(--iron);
 }
 
-/* Los rieles eran negro plano y se veian muertos al lado del resto. Ahora
-   llevan trama diagonal y una luz corta desde arriba, muy tenues: dan materia
-   sin robarle atencion al contenido, que no se toca.
+/* Solo el riel LATERAL lleva materia. En los de arriba y abajo la trama
+   competia con la marca y los atajos, que son texto pequeño, y se veia sucia;
+   ahi el negro plano funciona mejor.
 
-   z-index -1 los mantiene por detras del texto del propio riel. Funciona
-   porque .rail y .rail-nav ya crean contexto de apilamiento con su z-index,
-   asi que el -1 no se escapa por debajo del fondo de la pagina. */
-.rail::before,
+   z-index -1 la mantiene por detras del contenido del propio riel. Funciona
+   porque .rail-nav ya crea contexto de apilamiento con su z-index, asi que el
+   -1 no se escapa por debajo del fondo de la pagina. */
 .rail-nav::before {
   position: absolute;
   inset: 0;
@@ -180,7 +179,8 @@
 .bg__shape,
 .bg__stripes,
 .bg__dots,
-.bg__burstWrap {
+.bg__art,
+.bg__artWrap {
   transition:
     opacity calc(var(--dur-slow) * 2) var(--ease-out-hard),
     transform calc(var(--dur-slow) * 2) var(--ease-out-hard);
@@ -221,22 +221,35 @@
   opacity: var(--bg-dots);
 }
 
-/* Estallido dentado: geometria original, giro muy lento. */
-.bg__burstWrap {
+/* Figura de seccion. Las cinco estan montadas a la vez y se funden entre si
+   por opacidad: renderizar solo la activa daria un corte seco al cambiar. */
+.bg__artWrap {
   position: absolute;
   top: -18vmax;
   right: -18vmax;
   width: 58vmax;
   height: 58vmax;
-  opacity: var(--bg-burst);
   transform: translate3d(var(--burst-x), var(--burst-y), 0) scale(var(--burst-s));
 }
 
-.bg__burst {
+.bg__art {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   color: var(--blood);
-  animation: burst-spin 180s linear infinite;
+  opacity: 0;
+  animation: burst-spin var(--spin, 180s) linear infinite;
+}
+
+/* Una duracion negativa no es valida, asi que el giro inverso se pide por
+   direccion. Alternarlo evita que las cinco figuras se lean sincronizadas. */
+.bg__art[data-rev] {
+  animation-direction: reverse;
+}
+
+.bg__art[data-on] {
+  opacity: var(--bg-burst);
 }
 
 /* --- Ambiente por seccion ---
