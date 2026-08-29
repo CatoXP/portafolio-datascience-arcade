@@ -143,7 +143,7 @@ export default function App() {
 
   return (
     <>
-      <Backdrop />
+      <Backdrop section={activeSection.id} />
 
       <div className="app">
         <a className="u-skip" href={`#panel-${activeSection.id}`}>

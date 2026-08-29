@@ -138,6 +138,29 @@
   overflow: hidden;
   pointer-events: none;
   background: var(--void);
+
+  /* Valores base. Cada seccion los reescribe mas abajo. */
+  --bg-a: 0.07;
+  --bg-b: 0.04;
+  --bg-stripes: 0.035;
+  --bg-dots: 0.09;
+  --bg-burst: 0.1;
+  --burst-x: 0vmax;
+  --burst-y: 0vmax;
+  --burst-s: 1;
+}
+
+/* El fundido va al doble de --dur-slow para que el ambiente cambie mas
+   despacio que la interfaz: si fuera igual de rapido competiria con el
+   barrido en vez de acompañarlo. Sigue colapsando con movimiento reducido,
+   porque el token de base es el que se anula. */
+.bg__shape,
+.bg__stripes,
+.bg__dots,
+.bg__burstWrap {
+  transition:
+    opacity calc(var(--dur-slow) * 2) var(--ease-out-hard),
+    transform calc(var(--dur-slow) * 2) var(--ease-out-hard);
 }
 
 .bg__shape {
@@ -149,7 +172,7 @@
   inset: -30% 45% 30% -20%;
   background: var(--blood);
   clip-path: polygon(0 18%, 100% 0, 78% 100%, 0 82%);
-  opacity: 0.07;
+  opacity: var(--bg-a);
   animation: drift-a 34s ease-in-out infinite alternate;
 }
 
@@ -157,7 +180,7 @@
   inset: 40% -25% -35% 40%;
   background: var(--bone);
   clip-path: polygon(22% 0, 100% 12%, 100% 88%, 0 100%);
-  opacity: 0.04;
+  opacity: var(--bg-b);
   animation: drift-b 46s ease-in-out infinite alternate;
 }
 
@@ -165,26 +188,95 @@
   position: absolute;
   inset: -20%;
   color: var(--bone);
-  opacity: 0.035;
+  opacity: var(--bg-stripes);
 }
 
 .bg__dots {
   position: absolute;
   inset: 0;
   color: var(--bone);
-  opacity: 0.09;
+  opacity: var(--bg-dots);
 }
 
 /* Estallido dentado: geometria original, giro muy lento. */
-.bg__burst {
+.bg__burstWrap {
   position: absolute;
   top: -18vmax;
   right: -18vmax;
   width: 58vmax;
   height: 58vmax;
+  opacity: var(--bg-burst);
+  transform: translate3d(var(--burst-x), var(--burst-y), 0) scale(var(--burst-s));
+}
+
+.bg__burst {
+  width: 100%;
+  height: 100%;
   color: var(--blood);
-  opacity: 0.1;
   animation: burst-spin 180s linear infinite;
+}
+
+/* --- Ambiente por seccion ---
+   Misma paleta y mismas piezas en las cinco: lo que cambia es el peso de
+   cada trama y donde cae el estallido. Los valores se mantienen bajos a
+   proposito, porque el fondo no debe competir con el texto. */
+
+/* Presentacion: el estallido manda arriba a la derecha. */
+.bg[data-section='inicio'] {
+  --bg-a: 0.07;
+  --bg-b: 0.04;
+  --bg-stripes: 0.035;
+  --bg-dots: 0.09;
+  --bg-burst: 0.1;
+}
+
+/* Lectura larga: mas papel que grito. Trama densa, rojo retirado y estallido
+   pequeño y lejos, para no pelear con el bloque de texto. */
+.bg[data-section='sobre-mi'] {
+  --bg-a: 0.035;
+  --bg-b: 0.06;
+  --bg-stripes: 0.018;
+  --bg-dots: 0.13;
+  --bg-burst: 0.05;
+  --burst-x: 12vmax;
+  --burst-y: -9vmax;
+  --burst-s: 0.72;
+}
+
+/* Rejilla: el halftone al frente, acompañando las tarjetas. */
+.bg[data-section='proyectos'] {
+  --bg-a: 0.05;
+  --bg-b: 0.03;
+  --bg-stripes: 0.014;
+  --bg-dots: 0.16;
+  --bg-burst: 0.06;
+  --burst-x: 5vmax;
+  --burst-y: 24vmax;
+  --burst-s: 0.85;
+}
+
+/* Medidores: las rayas diagonales toman el frente, en eco de las barras. */
+.bg[data-section='skills'] {
+  --bg-a: 0.05;
+  --bg-b: 0.05;
+  --bg-stripes: 0.07;
+  --bg-dots: 0.045;
+  --bg-burst: 0.07;
+  --burst-x: -7vmax;
+  --burst-y: 13vmax;
+  --burst-s: 0.9;
+}
+
+/* Cierre: el mas rojo y el mas frontal de los cinco. */
+.bg[data-section='contacto'] {
+  --bg-a: 0.11;
+  --bg-b: 0.03;
+  --bg-stripes: 0.03;
+  --bg-dots: 0.06;
+  --bg-burst: 0.15;
+  --burst-x: -4vmax;
+  --burst-y: 2vmax;
+  --burst-s: 1.22;
 }
 
 /* --- Barrido diagonal de transicion ---
