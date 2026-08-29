@@ -1,4 +1,4 @@
-# portfolio-for-fun
+# portafolio-datascience-arcade
 
 Portafolio personal de **Brandon Uriel García Sánchez** (CatoXP / BUGS), con una
 dirección visual de menú de consola: rojo, negro y crema, paneles inclinados,
@@ -59,7 +59,7 @@ npm install
 npm run dev
 ```
 
-El servidor de desarrollo abre en `http://localhost:5173/portfolio-for-fun/`.
+El servidor de desarrollo abre en `http://localhost:5173/portafolio-datascience-arcade/`.
 El subdirectorio está a propósito: es el mismo que en producción, así que
 cualquier error de rutas se ve en local y no después de desplegar.
 
