@@ -99,7 +99,8 @@
 
 /* Cursor y descripcion: solo en escritorio, donde la lista es vertical. */
 .menu__cursor,
-.menu__blurb {
+.menu__blurb,
+.menu__slab {
   display: none;
 }
 
@@ -110,6 +111,7 @@
   }
 
   .menu {
+    position: relative;
     flex: 1;
     flex-direction: column;
     gap: var(--sp-2);
@@ -122,6 +124,42 @@
     width: 100%;
     padding: var(--sp-3) var(--sp-5);
     text-align: left;
+  }
+
+  .menu__item[aria-selected='true'] .menu__shape {
+    background: transparent;
+    animation: none;
+  }
+
+  /* --- El bloque rojo deslizante ---
+     Un unico elemento que viaja entre secciones en lugar de un fondo por
+     item. Aparecer de golpe en el destino se siente digital; desplazarse
+     se siente fisico, que es lo que pide un menu de consola.
+
+     Va primero en el DOM y sin position propia en los items... salvo que
+     .menu__item si es relative, asi que el texto queda por encima sin
+     necesidad de z-index. */
+  .menu__slab {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: var(--slab-h, 0);
+    pointer-events: none;
+    transform: translate3d(0, var(--slab-y, 0), 0);
+    transition: transform var(--dur-mid) var(--ease-out-hard);
+  }
+
+  /* El sesgo y el tic en reposo viven en el hijo: si compartieran transform
+     con el desplazamiento, el keyframe pisaria la posicion. */
+  .menu__slabInner {
+    position: absolute;
+    inset: 0;
+    background: var(--blood);
+    clip-path: var(--clip-notch-br);
+    transform: skewX(var(--skew));
+    animation: slab-wobble 2.6s ease-in-out infinite;
   }
 
   /* --- El abanico ---

@@ -1,4 +1,4 @@
-import { useImperativeHandle } from 'react';
+import { useImperativeHandle, useLayoutEffect, useState } from 'react';
 import type { Ref } from 'react';
 import { SECTIONS } from '../data/sections';
 
@@ -20,22 +20,17 @@ const FALLBACK_BLURB = '';
 /** Menu de consola con semantica de tabs.
 
     Patron tablist/tab/tabpanel con activacion MANUAL: las flechas mueven el
-    cursor y Enter confirma. Es exactamente "un panel visible de N, las
-    flechas mueven entre encabezados", que es lo que un lector de pantalla ya
-    espera aqui.
+    cursor y Enter confirma.
 
     Roving tabindex en vez de aria-activedescendant: el foco se mueve de
-    verdad, asi :focus-visible funciona solo, el navegador desplaza la tira
-    horizontal por su cuenta y Enter es comportamiento nativo de <button>.
+    verdad, asi :focus-visible funciona solo y Enter es comportamiento nativo
+    de <button>.
 
-    El <button> NO lleva clip-path (recortaria el anillo de foco) ni
-    transform animado. La geometria vive en .menu__shape.
+    El <button> NO lleva clip-path (recortaria el anillo de foco) ni transform
+    animado. La geometria vive en .menu__shape.
 
-    Cada item recibe su distancia AL CURSOR (no al activo) en --d con signo y
-    --ad en valor absoluto. El CSS los usa para abrir la lista en abanico: los
-    de arriba se inclinan hacia un lado, los de abajo hacia el otro, y todos
-    se apagan segun se alejan. Asi la lista comunica posicion, no solo cual
-    esta elegido. */
+    Cada item recibe su distancia AL CURSOR en --d con signo y --ad absoluta,
+    y el CSS las usa para abrir la lista en abanico. */
 export function SectionMenu({
   activeIndex,
   focusedIndex,
@@ -54,6 +49,39 @@ export function SectionMenu({
     [itemsRef],
   );
 
+  /* El bloque rojo es UN solo elemento que se desplaza, no un fondo por item.
+     Asi se desliza de una seccion a otra en vez de aparecer de golpe en el
+     destino, que es lo que hace que el menu se sienta fisico.
+
+     Hay que medirlo en JS porque su alto depende del item, y el item depende
+     de la tipografia: Anton cambia los altos al terminar de cargar, de ahi el
+     remedido en document.fonts.ready. */
+  const [slab, setSlab] = useState({ y: 0, h: 0, ready: false });
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const node = itemsRef.current[activeIndex];
+      if (!node) return;
+      setSlab({ y: node.offsetTop, h: node.offsetHeight, ready: true });
+    };
+
+    measure();
+    void document.fonts?.ready.then(measure);
+
+    const node = itemsRef.current[activeIndex];
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    if (ro && node) {
+      ro.observe(node);
+      if (node.parentElement) ro.observe(node.parentElement);
+    }
+    window.addEventListener('resize', measure);
+
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [activeIndex, itemsRef]);
+
   const blurb = SECTIONS[focusedIndex]?.blurb ?? FALLBACK_BLURB;
 
   return (
@@ -64,6 +92,24 @@ export function SectionMenu({
         aria-label="Secciones del portafolio"
         aria-orientation={vertical ? 'vertical' : 'horizontal'}
       >
+        {slab.ready ? (
+          <span
+            className="menu__slab"
+            aria-hidden="true"
+            style={
+              {
+                '--slab-y': `${slab.y}px`,
+                '--slab-h': `${slab.h}px`,
+              } as React.CSSProperties
+            }
+          >
+            {/* El desplazamiento vive en el padre y el sesgo mas el tic en
+                reposo en el hijo: si compartieran transform, uno pisaria al
+                otro. */}
+            <span className="menu__slabInner" />
+          </span>
+        ) : null}
+
         {SECTIONS.map((section, i) => {
           const d = i - focusedIndex;
           return (
@@ -97,17 +143,12 @@ export function SectionMenu({
                   &#9654;
                 </span>
               </span>
-              {/* La descripcion tambien va aqui, oculta: quien navega con
-                  lector de pantalla la oye al enfocar la pestaña, sin
-                  depender del panel visual de abajo. */}
               <span className="u-visually-hidden">. {section.blurb}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Panel de descripcion del item bajo el cursor. Decorativo para
-          tecnologia asistiva: el texto ya viaja dentro de cada tab. */}
       <p className="menu__blurb" aria-hidden="true">
         <span className="menu__blurbBar" />
         <span key={focusedIndex} className="menu__blurbText">
