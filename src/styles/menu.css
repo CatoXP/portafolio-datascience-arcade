@@ -1,15 +1,23 @@
 /* Menu de consola.
 
    Movil primero: tira horizontal deslizable.
-   Escritorio (>=768px): columna vertical fija a la izquierda.
+   Escritorio (>=768px): columna vertical en abanico.
 
    El boton .menu__item es el elemento focusable, asi que NO lleva clip-path
    (recortaria el anillo de foco) ni transform animado. La geometria vive en
    .menu__shape y el movimiento en .menu__body. */
 
-.menu {
+.rail-nav {
   position: relative;
   z-index: var(--z-rail);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--void);
+  border-bottom: 2px solid var(--iron);
+}
+
+.menu {
   display: flex;
   flex-direction: row;
   gap: var(--sp-1);
@@ -17,8 +25,6 @@
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x proximity;
-  background: var(--void);
-  border-bottom: 2px solid var(--iron);
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -61,6 +67,7 @@
   color: var(--ash);
   transition:
     color var(--dur-fast) linear,
+    opacity var(--dur-mid) var(--ease-out-hard),
     transform var(--dur-mid) var(--ease-out-hard);
   transform: skewY(0deg) translate3d(0, 0, 0);
 }
@@ -79,6 +86,7 @@
   font-weight: 800;
   letter-spacing: 0.1em;
   opacity: 0.75;
+  transition: font-size var(--dur-mid) var(--ease-out-hard);
 }
 
 .menu__label {
@@ -89,20 +97,25 @@
   white-space: nowrap;
 }
 
-/* Cursor: solo en escritorio, donde la lista es vertical. */
-.menu__cursor {
+/* Cursor y descripcion: solo en escritorio, donde la lista es vertical. */
+.menu__cursor,
+.menu__blurb {
   display: none;
 }
 
 @media (min-width: 768px) {
-  .menu {
-    flex-direction: column;
-    gap: var(--sp-2);
-    padding: var(--sp-8) 0 var(--sp-8) var(--sp-4);
-    overflow-x: visible;
-    overflow-y: auto;
+  .rail-nav {
     border-right: 2px solid var(--iron);
     border-bottom: none;
+  }
+
+  .menu {
+    flex: 1;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-8) 0 var(--sp-6) var(--sp-4);
+    overflow-x: visible;
+    overflow-y: auto;
   }
 
   .menu__item {
@@ -111,15 +124,35 @@
     text-align: left;
   }
 
+  /* --- El abanico ---
+     --d es la distancia CON SIGNO al cursor y --ad su valor absoluto. Los de
+     arriba se inclinan hacia un lado y los de abajo hacia el otro, y todos se
+     retiran y se apagan segun se alejan. El resultado comunica posicion
+     dentro de la lista, no solo cual esta elegido: con una inclinacion
+     uniforme, los cinco inactivos se veian iguales entre si. */
   .menu__body {
     justify-content: flex-start;
-    /* Los inactivos quedan inclinados y apagados. */
-    transform: skewY(var(--skew-soft)) translate3d(0, 0, 0);
+    transform: skewY(calc(-2.6deg * var(--d, 0)))
+      translate3d(calc(var(--ad, 0) * -7px), 0, 0);
+    /* Piso de 0.72 a proposito. Sin el, el item mas lejano bajaba al 36% y
+       su contraste caia a ~1.7:1: ilegible, y encima son botones de
+       navegacion. Con el piso se queda en ~3.6:1, que pasa AA para texto
+       grande. La sensacion de profundidad la cargan el skew y el
+       desplazamiento, no la transparencia. */
+    opacity: max(0.72, calc(1 - var(--ad, 0) * 0.1));
   }
 
-  /* El activo se endereza y se desplaza a la derecha. */
+  /* El item bajo el cursor se endereza solo, porque ahi --d vale 0. */
+
   .menu__item[aria-selected='true'] .menu__body {
     transform: skewY(0deg) translate3d(var(--sp-4), 0, 0);
+    opacity: 1;
+  }
+
+  /* El numero crece en el activo: refuerza donde estas de un vistazo. */
+  .menu__item[aria-selected='true'] .menu__index {
+    font-size: 0.95rem;
+    opacity: 1;
   }
 
   .menu__label {
@@ -136,6 +169,31 @@
 
   .menu__item[aria-selected='true'] .menu__cursor {
     opacity: 1;
+  }
+
+  /* --- Descripcion del item bajo el cursor --- */
+  .menu__blurb {
+    display: flex;
+    gap: var(--sp-3);
+    align-items: flex-start;
+    padding: var(--sp-5) var(--sp-5) var(--sp-8);
+    margin-top: auto;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--ash);
+  }
+
+  .menu__blurbBar {
+    flex: 0 0 auto;
+    width: 3px;
+    align-self: stretch;
+    background: var(--blood);
+  }
+
+  /* La key en el TSX cambia con el cursor y remonta este span, asi que la
+     animacion se vuelve a disparar en cada movimiento. */
+  .menu__blurbText {
+    animation: rise-in var(--dur-mid) var(--ease-out-hard) both;
   }
 }
 

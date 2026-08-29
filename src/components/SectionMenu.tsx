@@ -1,7 +1,6 @@
 import { useImperativeHandle } from 'react';
 import type { Ref } from 'react';
 import { SECTIONS } from '../data/sections';
-import { cx } from '../lib/cx';
 
 export interface MenuHandle {
   focusItem: (index: number) => void;
@@ -16,6 +15,8 @@ interface Props {
   itemsRef: React.RefObject<Array<HTMLButtonElement | null>>;
 }
 
+const FALLBACK_BLURB = '';
+
 /** Menu de consola con semantica de tabs.
 
     Patron tablist/tab/tabpanel con activacion MANUAL: las flechas mueven el
@@ -28,7 +29,13 @@ interface Props {
     horizontal por su cuenta y Enter es comportamiento nativo de <button>.
 
     El <button> NO lleva clip-path (recortaria el anillo de foco) ni
-    transform animado. La geometria vive en .menu__shape. */
+    transform animado. La geometria vive en .menu__shape.
+
+    Cada item recibe su distancia AL CURSOR (no al activo) en --d con signo y
+    --ad en valor absoluto. El CSS los usa para abrir la lista en abanico: los
+    de arriba se inclinan hacia un lado, los de abajo hacia el otro, y todos
+    se apagan segun se alejan. Asi la lista comunica posicion, no solo cual
+    esta elegido. */
 export function SectionMenu({
   activeIndex,
   focusedIndex,
@@ -47,40 +54,66 @@ export function SectionMenu({
     [itemsRef],
   );
 
+  const blurb = SECTIONS[focusedIndex]?.blurb ?? FALLBACK_BLURB;
+
   return (
-    <div
-      className="menu"
-      role="tablist"
-      aria-label="Secciones del portafolio"
-      aria-orientation={vertical ? 'vertical' : 'horizontal'}
-    >
-      {SECTIONS.map((section, i) => (
-        <button
-          key={section.id}
-          id={`tab-${section.id}`}
-          type="button"
-          role="tab"
-          className={cx('menu__item')}
-          aria-selected={i === activeIndex}
-          aria-controls={`panel-${section.id}`}
-          tabIndex={i === focusedIndex ? 0 : -1}
-          ref={(el) => {
-            itemsRef.current[i] = el;
-          }}
-          onClick={() => onActivate(i)}
-        >
-          <span className="menu__shape" aria-hidden="true" />
-          <span className="menu__body">
-            <span className="menu__index" aria-hidden="true">
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <span className="menu__label">{section.label}</span>
-            <span className="menu__cursor" aria-hidden="true">
-              &#9654;
-            </span>
-          </span>
-        </button>
-      ))}
+    <div className="rail-nav">
+      <div
+        className="menu"
+        role="tablist"
+        aria-label="Secciones del portafolio"
+        aria-orientation={vertical ? 'vertical' : 'horizontal'}
+      >
+        {SECTIONS.map((section, i) => {
+          const d = i - focusedIndex;
+          return (
+            <button
+              key={section.id}
+              id={`tab-${section.id}`}
+              type="button"
+              role="tab"
+              className="menu__item"
+              aria-selected={i === activeIndex}
+              aria-controls={`panel-${section.id}`}
+              tabIndex={i === focusedIndex ? 0 : -1}
+              ref={(el) => {
+                itemsRef.current[i] = el;
+              }}
+              onClick={() => onActivate(i)}
+              style={
+                {
+                  '--d': d,
+                  '--ad': Math.abs(d),
+                } as React.CSSProperties
+              }
+            >
+              <span className="menu__shape" aria-hidden="true" />
+              <span className="menu__body">
+                <span className="menu__index" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="menu__label">{section.label}</span>
+                <span className="menu__cursor" aria-hidden="true">
+                  &#9654;
+                </span>
+              </span>
+              {/* La descripcion tambien va aqui, oculta: quien navega con
+                  lector de pantalla la oye al enfocar la pestaña, sin
+                  depender del panel visual de abajo. */}
+              <span className="u-visually-hidden">. {section.blurb}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Panel de descripcion del item bajo el cursor. Decorativo para
+          tecnologia asistiva: el texto ya viaja dentro de cada tab. */}
+      <p className="menu__blurb" aria-hidden="true">
+        <span className="menu__blurbBar" />
+        <span key={focusedIndex} className="menu__blurbText">
+          {blurb}
+        </span>
+      </p>
     </div>
   );
 }

@@ -3,6 +3,8 @@ export type SectionId = 'inicio' | 'sobre-mi' | 'proyectos' | 'skills' | 'contac
 export interface SectionDef {
   id: SectionId;
   label: string;
+  /** Descripcion corta que aparece bajo el menu al mover el cursor. */
+  blurb: string;
 }
 
 export interface Project {
