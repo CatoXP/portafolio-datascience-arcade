@@ -14,7 +14,7 @@ export const PROJECTS: readonly Project[] = [
   {
     title: 'Home Credit · GCI World 2026',
     desc: 'Competencia de machine learning de la Universidad de Tokio (Matsuo-Iwasawa Lab): predecir el impago de 61,500 clientes. Recuperé el plazo y la tasa de interés ocultos despejando la fórmula de anualidades, identifiqué solicitudes de la misma persona y armé un ensamble de cuatro modelos validado sin fuga de datos.',
-    metric: 'Top 16 · AUC 0.774',
+    metric: 'AUC 0.774 · leaderboard',
     stack: ['Python', 'LightGBM', 'XGBoost', 'CatBoost'],
     repo: PROYECTO('home-credit-default-risk-gci-utokyo'),
   },

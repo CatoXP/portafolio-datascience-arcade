@@ -16,7 +16,7 @@ export const PROFILE = {
     'Desde mayo de 2026 soy **becario de desarrollo y automatización en HSBC Global Service Centre México**, en el área de reportería regulatoria. Ahí llevo proyectos de punta a punta y el trabajo se parece bastante al de ingeniería de software: construyo herramientas en Python para generar y consolidar reportes, desarrollo **aplicaciones con interfaz gráfica** que usa a diario personal no técnico, y automatizo flujos de procesamiento y compresión de archivos que antes se hacían a mano. También lidero una iniciativa para impulsar la adopción de IA dentro del área.',
     'Antes fui **administrador de base de datos y BI** en Maxi durante poco más de dos años: optimicé la estructura y las consultas SQL reduciendo un 30% los tiempos de procesamiento, gestioné un ERP a medida para control de inventario y analicé datos históricos de venta para decisiones de reabastecimiento y rotación de producto.',
     'Formo parte del programa de formación y mentoría **Inroads México**.',
-    'Estoy cursando **GCI World 2026**, el programa de ciencia de datos e IA del Matsuo-Iwasawa Lab de la Universidad de Tokio. En su competencia de machine learning (riesgo de impago, Home Credit) quedé en el **Top 16 del leaderboard público**, con un AUC de 0.774.',
+    'Estoy cursando **GCI World 2026**, el programa de ciencia de datos e IA del Matsuo-Iwasawa Lab de la Universidad de Tokio. En su competencia de machine learning (riesgo de impago, Home Credit) participé con un modelo que obtuvo un **AUC de 0.774** en el leaderboard público.',
   ],
 
   facts: [
@@ -25,7 +25,7 @@ export const PROFILE = {
     { key: 'Universidad', val: 'UNRC · 2024–2028' },
     { key: 'Actualmente', val: 'HSBC GSC México' },
     { key: 'Programa', val: 'Inroads México' },
-    { key: 'Competencia', val: 'Top 16 · GCI World 2026 (UTokyo)' },
+    { key: 'Competencia', val: 'GCI World 2026 · UTokyo' },
     { key: 'Idiomas', val: 'Español nativo · Inglés A2' },
   ],
 
